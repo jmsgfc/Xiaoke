@@ -1,0 +1,30 @@
+# OS / editor
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+
+# Logs
+logs/*
+!logs/.gitkeep
+*.log
+
+# Frontend
+frontend/node_modules/
+frontend/dist/
+frontend/test-results/
+frontend/.vite/
+frontend/*.tsbuildinfo
+
+# Backend
+backend/target/
+backend/data/
+
+# Uploads and generated assets
+uploads/*
+!uploads/.gitkeep
+
+# Local env / IDE
+.idea/
+.vscode/
+*.iml
