@@ -23,6 +23,8 @@ backend/data/
 # Uploads and generated assets
 uploads/*
 !uploads/.gitkeep
+!uploads/photos/
+!uploads/photos/**
 
 # Local env / IDE
 .env
