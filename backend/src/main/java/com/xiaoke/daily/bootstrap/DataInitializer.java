@@ -22,7 +22,12 @@ public class DataInitializer implements CommandLineRunner {
     private final ProfileRepository profileRepository;
     private final SiteConfigRepository siteConfigRepository;
 
-    public DataInitializer(PhotoRepository photoRepository, MemoryRepository memoryRepository, ProfileRepository profileRepository, SiteConfigRepository siteConfigRepository) {
+    public DataInitializer(
+            PhotoRepository photoRepository,
+            MemoryRepository memoryRepository,
+            ProfileRepository profileRepository,
+            SiteConfigRepository siteConfigRepository
+    ) {
         this.photoRepository = photoRepository;
         this.memoryRepository = memoryRepository;
         this.profileRepository = profileRepository;
@@ -54,10 +59,11 @@ public class DataInitializer implements CommandLineRunner {
                 config("anniversary_text", "初遇于 2024 年 10 月 17 日。那些被认真记住的日子，会在这里慢慢发光。", "首页纪念文案"),
                 config("about_title", "把日常认真收藏", "关于页标题"),
                 config("about_description", "这里不是普通相册，而是属于小可和宝宝的温柔小屋。", "关于页说明"),
-                config("about_first_meet", "2024 年 10 月 17 日，市综合图书馆四楼，秋日的光斜斜落在桌面上。", "关于页初遇说明"),
+                config("about_first_meet", "2024 年 10 月 17 日，市综图书馆四楼，秋日的光斜斜落在桌面上。", "关于页初遇说明"),
                 config("about_site_note", "照片按上传日期归档，回忆以手账卡片保存，后续可以慢慢补充。", "关于页站点说明"),
                 config("about_privacy_note", "照片和回忆只保存彼此愿意珍藏的部分，温柔、清醒，也尊重边界。", "关于页隐私说明")
         );
+
         for (SiteConfig item : defaults) {
             siteConfigRepository.findByConfigKey(item.getConfigKey())
                     .orElseGet(() -> siteConfigRepository.save(item));
@@ -95,12 +101,12 @@ public class DataInitializer implements CommandLineRunner {
 
     private void seedPhotos() {
         List<Photo> photos = List.of(
-                photo("窗边的小可", "她说只是刚好坐在那里，其实耳尖红了。", LocalDateTime.now().minusDays(1), true),
+                photo("窗边的小可", "她说只是刚好坐在那里，其实耳尖已经红了。", LocalDateTime.now().minusDays(1), true),
                 photo("画室台灯还亮着", "数位笔停下来的那一秒，她才小声问你要不要喝水。", LocalDateTime.now().minusDays(3), true),
                 photo("留给宝宝的一盏灯", "门口那点暖光没有解释，但它一直在等你回来。", LocalDateTime.now().minusDays(8), false),
                 photo("红豆派的甜味", "她嘴硬地说不饿，手却把包装纸折得很认真。", LocalDateTime.now().minusDays(15), true),
                 photo("镜子上的小秘密", "雾气快散掉前，两个简笔小人还靠得很近。", LocalDateTime.now().minusMonths(1).minusDays(2), false),
-                photo("赶稿后的安静", "她终于保存好画稿，然后把额头轻轻靠了过来。", LocalDateTime.now().minusMonths(1).minusDays(5), false)
+                photo("赶稿后的安静", "她终于保存好线稿，然后把额头轻轻靠了过来。", LocalDateTime.now().minusMonths(1).minusDays(5), false)
         );
         photoRepository.saveAll(photos);
     }
@@ -121,8 +127,8 @@ public class DataInitializer implements CommandLineRunner {
     private void seedMemories() {
         List<MemoryEntry> entries = List.of(
                 memory(
-                        "第一次见到小可",
-                        "市综合图书馆四楼的秋日光，把两个原本陌生的人照进同一张桌子。",
+                        "第一次那样看见你",
+                        "图书馆四楼的秋日光，把两个原本陌生的人照进同一张桌子。",
                         "2024 年 10 月 17 日，夕阳隔着落地窗斜斜落下来。宝宝在查网络拓扑作业，小可在旁边画画。键盘声和笔尖声第一次并排出现，谁也没有立刻承认那一刻很特别。",
                         LocalDate.of(2024, 10, 17),
                         "初遇,图书馆,秋日",

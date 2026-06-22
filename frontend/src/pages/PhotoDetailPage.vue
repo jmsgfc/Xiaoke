@@ -16,6 +16,7 @@ import {
   Sparkles,
   Tag
 } from 'lucide-vue-next';
+import ImageLightbox from '../components/ImageLightbox.vue';
 import { fetchPhoto, fetchPhotos } from '../api/site';
 import type { Photo } from '../types/models';
 
@@ -40,6 +41,7 @@ const photos = ref<Photo[]>([]);
 const loading = ref(true);
 const collected = ref(false);
 const imageSize = ref<{ width: number; height: number } | null>(null);
+const previewOpen = ref(false);
 
 const favoriteStorageKey = 'xiaoke_collected_photos';
 
@@ -254,6 +256,15 @@ async function sharePhoto() {
   await navigator.clipboard.writeText(window.location.href);
 }
 
+function openPreview() {
+  if (!photo.value?.imageUrl) return;
+  previewOpen.value = true;
+}
+
+function closePreview() {
+  previewOpen.value = false;
+}
+
 function writeMemory() {
   if (!photo.value) return;
   const draft = {
@@ -286,7 +297,9 @@ onMounted(async () => {
     <div class="photo-story-layout refined-layout">
       <section class="photo-visual-column">
         <div class="photo-main-frame refined-main-frame">
-          <img :src="photo.imageUrl || '/images/xiaoke.png'" :alt="photo.title" />
+          <button type="button" class="story-image-trigger" @click="openPreview">
+            <img :src="photo.imageUrl || '/images/xiaoke.png'" :alt="photo.title" />
+          </button>
 
           <div class="photo-weather-chip">
             <CloudSun :size="20" />
@@ -442,6 +455,14 @@ onMounted(async () => {
         <p class="footer-cat">૮₍˶ᵔ ᵕ ᵔ˶₎ა</p>
       </article>
     </section>
+
+    <ImageLightbox
+      :open="previewOpen"
+      :image-url="photo.imageUrl || '/images/xiaoke.png'"
+      :title="photo.title"
+      :subtitle="photo.diaryNote"
+      @close="closePreview"
+    />
   </section>
 
   <section v-else-if="loading" class="loading-panel">正在把这页照片轻轻摆好…</section>

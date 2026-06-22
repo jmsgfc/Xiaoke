@@ -14,6 +14,7 @@ import {
   Sparkles,
   SunMedium
 } from 'lucide-vue-next';
+import ImageLightbox from '../components/ImageLightbox.vue';
 import { fetchMemories, toggleMemoryFavorite } from '../api/site';
 import type { MemoryEntry } from '../types/models';
 
@@ -41,6 +42,10 @@ const memories = ref<MemoryEntry[]>([]);
 const loading = ref(true);
 const favoriteSubmitting = ref(false);
 const likedMemoryIds = ref<number[]>([]);
+const previewOpen = ref(false);
+const previewImageUrl = ref('');
+const previewTitle = ref('');
+const previewSubtitle = ref('');
 
 const storageKey = 'xiaoke_favorite_memories';
 
@@ -287,6 +292,17 @@ function goToMemory(id?: number) {
   router.push(`/memories/${id}`);
 }
 
+function openPreview(imageUrl: string, title: string, subtitle = '') {
+  previewImageUrl.value = imageUrl;
+  previewTitle.value = title;
+  previewSubtitle.value = subtitle;
+  previewOpen.value = true;
+}
+
+function closePreview() {
+  previewOpen.value = false;
+}
+
 async function loadPage() {
   loading.value = true;
   try {
@@ -316,11 +332,17 @@ onMounted(async () => {
       <section class="memory-story-visual">
         <article class="memory-photo-card">
           <span class="tape tape-left"></span>
-          <img
-            :src="currentMemory.coverImageUrl || '/images/xiaoke.png'"
-            :alt="currentMemory.title"
-            class="memory-photo-main"
-          />
+          <button
+            type="button"
+            class="story-image-trigger memory-image-trigger"
+            @click="openPreview(currentMemory.coverImageUrl || '/images/xiaoke.png', currentMemory.title, currentMemory.summary)"
+          >
+            <img
+              :src="currentMemory.coverImageUrl || '/images/xiaoke.png'"
+              :alt="currentMemory.title"
+              class="memory-photo-main"
+            />
+          </button>
           <div class="memory-photo-meta">
             <span><CalendarDays :size="15" /> {{ currentMemory.memoryDate }} {{ currentMeta.shotTime }}</span>
             <span><MapPin :size="15" /> {{ currentMeta.location }}</span>
@@ -337,14 +359,16 @@ onMounted(async () => {
         <article class="memory-companion-card">
           <h2>同一天的其他照片</h2>
           <div class="memory-companion-strip">
-            <div
+            <button
               v-for="image in currentMeta.companionImages"
               :key="image.imageUrl"
+              type="button"
               class="memory-companion-thumb"
               :title="image.title"
+              @click="openPreview(image.imageUrl, image.title, currentMemory.title)"
             >
               <img :src="image.imageUrl" :alt="image.title" />
-            </div>
+            </button>
             <button
               v-if="nextMemory"
               type="button"
@@ -461,6 +485,14 @@ onMounted(async () => {
         </button>
       </div>
     </section>
+
+    <ImageLightbox
+      :open="previewOpen"
+      :image-url="previewImageUrl"
+      :title="previewTitle"
+      :subtitle="previewSubtitle"
+      @close="closePreview"
+    />
   </section>
 
   <section v-else-if="loading" class="loading-panel">正在把这页手账慢慢翻开...</section>
